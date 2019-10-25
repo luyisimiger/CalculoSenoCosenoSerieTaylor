@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-content>
+        <v-container>
+            <v-app id="inspire">
+                <v-card color="basil">
+                  <v-card-title class="text-center justify-center py-6">
+                    <h1 class="font-weight-bold display-3 basil--text">Series de Taylor para el Cálculo</h1>
+                  </v-card-title>
+              
+                  <v-tabs
+                    v-model="tab"
+                    centered
+                  >
+                    <v-tab
+                      v-for="item in items"
+                      :key="item"
+                    >
+                      {{ item }}
+                    </v-tab>
+                  </v-tabs>
+              
+                  <v-tabs-items v-model="tab">
+                    <v-tab-item
+                      key="Seno"
+                    >
+                      <v-card flat color="basil">
+                        <v-card-text>
+                          <v-row>
+                            <v-col cols="6">
+                                <v-text-field
+                                color="primary"
+                                label="Valor del angulo"
+                                v-model="x"
+                                outlined
+                                @keyup.enter="calcularSeno"
+                              >
+                              </v-text-field>
+                              <v-btn outlined color="primary" dark @click="calcularSeno">calcular</v-btn>
+                            </v-col>
+                            
+                            <v-col cols="6">
+                              <v-text-field
+                                label="Resultado"
+                                outlined
+                                readonly
+                                textarea
+                                :value="resultsin"
+                              ></v-text-field>
+                              
+                            </v-col>
+
+                          </v-row>
+                            
+                        </v-form>
+                        </v-card-text>
+                        
+                      </v-card>
+                    </v-tab-item>
+
+                    <v-tab-item
+                      key="Coseno"
+                    >
+                      <v-card flat color="basil">
+                        <v-card-text>
+                          <v-row>
+                            <v-col cols="6">
+                                <v-text-field
+                                color="primary"
+                                label="Valor del angulo"
+                                v-model="x"
+                                outlined
+                                @keyup.enter="calcularCoseno"
+                              >
+                              </v-text-field>
+                              <v-btn outlined color="primary" dark @click="calcularCoseno">calcular</v-btn>
+                            </v-col>
+                            
+                            <v-col cols="6">
+                              <v-text-field
+                                label="Resultado"
+                                outlined
+                                readonly
+                                textarea
+                                :value="resultcos"
+                              ></v-text-field>
+                              
+                            </v-col>
+
+                          </v-row>
+                            
+                        </v-form>
+                        </v-card-text>
+                        
+                      </v-card>
+                    </v-tab-item>
+                  </v-tabs-items>
+                </v-card>
+              </v-app>
+
+        </v-container>
+
+      </v-content>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="js/taylor.js"></script>
+  <script>
+    
+    var vuemain = new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data () {
+        return {
+          tab: null,
+          items: ['Seno', 'Coseno'],
+          text: '',
+          x: 0,
+          resultsin: 0,
+          resultcos: 0,
+          orderTaylor: 250,
+          blsin: false,
+          mostrar: false,
+        }
+      },
+
+      computed: {
+        radians() {
+          return this.x * Math.PI / 180.0;
+        }
+      },
+
+      methods: {
+        
+        factorial( number ) {
+	
+          var product = Math.max(1,number)
+          
+          while( number-- > 1 ) {
+            product *= number
+          }
+          
+          return product
+        },
+
+        sin( x, iterations ) {
+
+          var sum = 0
+          
+          for( var n=0; n < iterations; n++ ) {
+            var numerator = Math.pow(-1, n) * Math.pow(x, 2 * n + 1 )
+            var denominator = this.factorial( 2 * n + 1 )
+            sum += numerator / denominator
+          }
+          
+          return sum
+        },
+
+        cos( x, iterations ) {
+
+          var sum = 0
+          
+          for( var n=0; n < iterations; n++ ) {
+            var numerator = Math.pow(-1, n) * Math.pow(x, 2 * n )
+            var denominator = this.factorial( 2 * n )
+            sum += numerator / denominator
+          }
+          
+          return sum
+        },
+
+        calcularSeno() {
+          console.log("seno");
+          this.blsin = true;
+          this.mostrar = true;
+          this.resultsin = this.sin(this.radians, this.orderTaylor);
+        },
+
+        calcularCoseno() {
+          console.log("coseno");
+          this.blsin = false;
+          this.mostrar = true;
+          this.resultcos = this.cos(this.radians, this.orderTaylor);
+        },
+      }
+    })
+  
+  </script>
+</body>
+</html>
